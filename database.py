@@ -14,6 +14,12 @@ class Base(DeclarativeBase):
 
 
 def get_db():
+    """
+    Function to get a database session
+
+    Yields:
+        SessionLocal: Database session
+    """
     db = SessionLocal()
     try:
         yield db
