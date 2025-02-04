@@ -7,6 +7,26 @@ from database import Base
 
 
 class PyAPI:
+    """
+    A class that represents a Python API.
+
+    Attributes:
+        name: str
+            The name of the API. Default is "PyAPI".
+        models: list[Model]
+            A list of Model objects.
+        tables: list[Base]
+            A list of SQLAlchemy ORM model classes.
+
+    Methods:
+        load_model(model: Model) -> None
+            Loads a Model object into the API.
+        create_table_class(model: Model) -> Base
+            Dynamically creates a SQLAlchemy ORM model class.
+        deploy() -> None
+            Deploys the API.
+    """
+
     def __init__(self):
         self.name: str = "PyAPI"
         self._models: list[Model] = []
@@ -32,12 +52,33 @@ class PyAPI:
 
     @enforce_types
     def load_model(self, model: Model) -> None:
+        """
+        Loads a Model object into the API.
+
+        Args:
+            model: Model
+                A Model object.
+
+        Raises:
+            ValueError: If the model is not a Model object.
+
+        """
         self.models.append(model)
         table = self._create_table_class(model)
         self.tables.append(table)
 
+    @enforce_types
     def _create_table_class(self, model: Model) -> Base:
-        """Dynamically creates a SQLAlchemy ORM model class."""
+        """
+        Dynamically creates a SQLAlchemy ORM model class.
+
+        Args:
+            model: Model
+                A Model object.
+
+        Returns:
+            Base: A SQLAlchemy ORM model class.
+        """
         attributes = {"__tablename__": model.name}
 
         for column in model.columns:
@@ -54,12 +95,15 @@ class PyAPI:
             else:
                 attributes[col_name] = SqlColumn(col_type)
 
-        print(f"Creating table: {model.name}")
-        print("Attributes:", attributes)
-
         return type(model.name, (Base,), attributes)
 
     def deploy(self) -> None:
+        """
+        Deploys the API.
+
+        Raises:
+            subprocess.CalledProcessError: If the script fails to run.
+        """
         try:
             result = subprocess.run(["bash", "run_api.sh"], check=True, text=True)
             print("Script output:", result.stdout)

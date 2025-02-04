@@ -2,12 +2,13 @@ import functools
 import inspect
 
 
-def enforce_types(func):
+def enforce_types(func: callable) -> callable:
     """
     Decorator to enforce type hints in function arguments.
 
     Args:
-        func: Function to be decorated.
+        func: callable
+            Function to be decorated.
 
     Returns:
         Wrapper function that enforces
