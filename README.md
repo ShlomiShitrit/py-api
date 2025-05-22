@@ -14,6 +14,8 @@
 
 ## 🧠 Usage
 ```python
+from pyapi import PyAPI, Model
+
 # create an instance of PyAPI
 api = PyAPI()
 
